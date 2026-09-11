@@ -7,19 +7,52 @@ hors-ligne après le premier chargement.
 ## Contenu du paquet
 
 ```
-index.html         page principale
-styles.css          identité visuelle
-app.js               logique d'interface (drag & drop, conversion, téléchargement)
-converter.mjs        le convertisseur AlphaTex → MusicXML (même logique que la version CLI)
-manifest.json         manifeste PWA (nom, icônes, couleurs, mode standalone)
-sw.js                  service worker (cache l'app pour l'usage hors-ligne)
-vendor/alphaTab.mjs         bibliothèque AlphaTab, vendorisée en local
-vendor/alphaTab.core.mjs    (pas de dépendance à un CDN externe — 100% autonome)
-icons/                icônes 192px / 512px, versions standard et "maskable"
+index.html            page principale
+styles.css             identité visuelle
+app.js                  logique d'interface (drag & drop, conversion, téléchargement, sélecteur de sens)
+converter.mjs           AlphaTex → MusicXML (sérialiseur écrit pour cet outil)
+converter-x2t.mjs        MusicXML → AlphaTex (glue autour de l'import/export natifs d'AlphaTab)
+manifest.json            manifeste PWA (nom, icônes, couleurs, mode standalone)
+sw.js                     service worker (cache l'app pour l'usage hors-ligne)
+vendor/alphaTab.mjs            bibliothèque AlphaTab, vendorisée en local
+vendor/alphaTab.core.mjs       (pas de dépendance à un CDN externe — 100% autonome)
+icons/                    icônes 192px / 512px, versions standard et "maskable"
 ```
 
 Aucune étape de build n'est nécessaire : ce sont des fichiers statiques
 prêts à être servis tels quels.
+
+## Les quatre sens de conversion
+
+Un sélecteur en haut de page bascule entre eux :
+
+- **AlphaTex → MusicXML** (`converter.mjs`) : la sérialisation MusicXML a
+  été écrite pour cet outil — voir la portée détaillée plus bas.
+- **MusicXML → AlphaTex** (`converter-x2t.mjs`) : glue autour de l'import
+  MusicXML natif et de l'`AlphaTexExporter` natif d'AlphaTab.
+- **AlphaTex → Guitar Pro** (`converter-t2gp.mjs`) : glue autour du parseur
+  AlphaTex natif et du `Gp7Exporter` natif d'AlphaTab (Guitar Pro 7+, depuis
+  la version 1.2.0). Entrée texte, **sortie fichier binaire** (`.gp`).
+- **Guitar Pro → AlphaTex** (`converter-gp2t.mjs`) : glue autour de
+  l'importeur Guitar Pro natif (détection automatique GP3/4/5/GPX/GP7+) et
+  de l'`AlphaTexExporter`. **Entrée fichier binaire**, sortie texte.
+
+Pour les deux sens impliquant Guitar Pro, l'interface s'adapte : la zone de
+texte devient une zone de dépôt de fichier en entrée binaire, et l'aperçu
+affiche la taille du fichier généré plutôt qu'un contenu illisible en sortie
+binaire.
+
+Un test en aller-retour (AlphaTex → export MusicXML maison → import/export
+natifs d'AlphaTab → AlphaTex, et séparément AlphaTex → .gp → AlphaTex)
+reproduit fidèlement les frettes, cordes, n-olets, nuances et changements de
+mesure d'origine dans tous les sens.
+
+**Limite connue pour MusicXML → AlphaTex** : la qualité dépend de l'import
+MusicXML d'AlphaTab, qualifié de "basique" par ses propres contributeurs,
+avec des bugs connus sur certains cas (balises de navigation D.C./segno/
+fine mal placées selon leur position dans le XML, calcul de tempo incorrect
+quand l'unité de métronome n'est pas la noire). Pour un MusicXML simple
+(notes, rythme, mesures, armure), la conversion est fiable.
 
 ## Tester en local
 

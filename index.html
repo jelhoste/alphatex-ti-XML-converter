@@ -30,10 +30,17 @@
       </svg>
     </div>
     <div>
-      <h1>AlphaTex&nbsp;<span class="arrow">vers</span>&nbsp;MusicXML</h1>
-      <p class="subtitle">Colle ta tablature, récupère une partition MusicXML — le tout dans ton navigateur, sans rien envoyer sur un serveur.</p>
+      <h1>AlphaTex&nbsp;<span class="arrow">⇄</span>&nbsp;MusicXML</h1>
+      <p class="subtitle">Convertis dans les deux sens — le tout dans ton navigateur, sans rien envoyer sur un serveur.</p>
     </div>
   </header>
+
+  <div class="direction-toggle" role="tablist" aria-label="Sens de conversion">
+    <button type="button" class="dir-btn is-active" data-mode="tex2xml" role="tab" aria-selected="true">AlphaTex → MusicXML</button>
+    <button type="button" class="dir-btn" data-mode="xml2tex" role="tab" aria-selected="false">MusicXML → AlphaTex</button>
+    <button type="button" class="dir-btn" data-mode="tex2gp" role="tab" aria-selected="false">AlphaTex → Guitar Pro</button>
+    <button type="button" class="dir-btn" data-mode="gp2tex" role="tab" aria-selected="false">Guitar Pro → AlphaTex</button>
+  </div>
 
   <main class="workspace">
 
@@ -49,6 +56,9 @@
         </div>
       </div>
       <textarea id="tex-input" spellcheck="false" placeholder="\title &quot;Mon morceau&quot;&#10;\tempo 100&#10;.&#10;\ts 4 4&#10;:4 0.6 0.5 2.4 3.3 |"></textarea>
+      <div id="binary-drop" class="binary-drop" hidden>
+        <p id="binary-drop-text">Glisse un fichier Guitar Pro ici, ou utilise « Ouvrir un fichier ».</p>
+      </div>
     </section>
 
     <section class="panel output-panel" aria-labelledby="output-label">
@@ -57,6 +67,9 @@
         <span id="status" class="status" role="status" aria-live="polite"></span>
       </div>
       <pre id="xml-output" class="paper-sheet"><code>Le résultat apparaîtra ici après conversion.</code></pre>
+      <div id="binary-output" class="binary-drop" hidden>
+        <p id="binary-output-text"></p>
+      </div>
     </section>
 
   </main>
@@ -69,7 +82,7 @@
   <p id="error-box" class="error-box" role="alert" hidden></p>
 
   <footer class="foot">
-    <p>Le fichier AlphaTex est analysé par la bibliothèque officielle <strong>AlphaTab</strong> ; seule la sérialisation vers MusicXML a été écrite pour cet outil. Fonctionne hors-ligne une fois chargé une première fois.</p>
+    <p>Toutes les conversions s'appuient sur la bibliothèque officielle <strong>AlphaTab</strong> pour l'analyse et, selon le sens, pour l'écriture du fichier. Seule la sérialisation AlphaTex → MusicXML a été écrite spécifiquement pour cet outil ; les trois autres sens n'utilisent que des importeurs/exporteurs natifs d'AlphaTab. Fonctionne hors-ligne une fois chargé une première fois.</p>
   </footer>
 
 </div>

@@ -1,7 +1,7 @@
 // Service worker: caches the app shell so the converter keeps working
 // offline after the first successful load. Bump CACHE_NAME whenever any
 // shell file changes, so returning visitors pick up the new version.
-const CACHE_NAME = 'alphatex2musicxml-shell-v1';
+const CACHE_NAME = 'alphatex2musicxml-shell-v3';
 
 const APP_SHELL = [
   './',
@@ -9,6 +9,9 @@ const APP_SHELL = [
   './styles.css',
   './app.js',
   './converter.mjs',
+  './converter-x2t.mjs',
+  './converter-t2gp.mjs',
+  './converter-gp2t.mjs',
   './manifest.json',
   './vendor/alphaTab.mjs',
   './vendor/alphaTab.core.mjs',
